@@ -5,25 +5,25 @@ repo="${DOTFILES_REPO:-git@github.com:curare/dotfiles.git}"
 dir="${DOTFILES_DIR:-$HOME/dotfiles}"
 key="$HOME/.ssh/github"
 
-activate_homebrew() {
-  if command -v brew >/dev/null 2>&1; then
-    return
-  elif [[ -x /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    return
-  elif [[ -x /usr/local/bin/brew ]]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-    return
+require_prerequisites() {
+  if ! xcode-select -p >/dev/null 2>&1; then
+    printf 'Xcode Command Line Tools are missing. Run: xcode-select --install\n' >&2
+    exit 1
   fi
 
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-  if [[ -x /opt/homebrew/bin/brew ]]; then
+  if command -v brew >/dev/null 2>&1; then
+    :
+  elif [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
   elif [[ -x /usr/local/bin/brew ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
   else
-    printf 'Homebrew installation did not provide a brew executable.\n' >&2
+    printf 'Homebrew is missing. Install it before running this script.\n' >&2
+    exit 1
+  fi
+
+  if [[ ! -d /Applications/Bitwarden.app ]]; then
+    printf 'Bitwarden is missing. Run: brew install --cask bitwarden\n' >&2
     exit 1
   fi
 }
@@ -31,10 +31,6 @@ activate_homebrew() {
 restore_github_key() {
   if [[ -f "$key" ]]; then
     return
-  fi
-
-  if [[ ! -d /Applications/Bitwarden.app ]] && ! brew list --cask bitwarden >/dev/null 2>&1; then
-    brew install --cask bitwarden
   fi
 
   open -a Bitwarden
@@ -56,7 +52,7 @@ restore_github_key() {
   printf 'Restored %s and cleared the clipboard.\n' "$key"
 }
 
-activate_homebrew
+require_prerequisites
 restore_github_key
 
 export GIT_SSH_COMMAND="ssh -i $key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
