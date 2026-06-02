@@ -33,7 +33,7 @@ restore_github_key() {
     return
   fi
 
-  if ! brew list --cask bitwarden >/dev/null 2>&1; then
+  if [[ ! -d /Applications/Bitwarden.app ]] && ! brew list --cask bitwarden >/dev/null 2>&1; then
     brew install --cask bitwarden
   fi
 
