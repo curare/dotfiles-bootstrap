@@ -6,7 +6,7 @@ Public entry point for provisioning a wiped Mac from the private
 Run:
 
 ```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/curare/dotfiles-bootstrap/28aa7c225598d49582befae600e481f06f39a8d4/bootstrap.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/curare/dotfiles-bootstrap/1e8dcf0a2ec09d325d5d57fddbf014c43b6e114d/bootstrap.sh)"
 ```
 
 The script contains no secrets. It installs Bitwarden when needed, prompts for
