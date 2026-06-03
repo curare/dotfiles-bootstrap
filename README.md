@@ -3,33 +3,23 @@
 Public entry point for provisioning a wiped Mac from the private
 `curare/dotfiles` repository.
 
-Install the prerequisites first:
+Run from Terminal on a fresh Mac:
 
 ```sh
-xcode-select --install
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/curare/dotfiles-bootstrap/main/bootstrap.sh)"
 ```
 
-After the Command Line Tools installer finishes:
+Or over SSH:
 
 ```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-if [[ -x /opt/homebrew/bin/brew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-else
-  eval "$(/usr/local/bin/brew shellenv)"
-fi
-[[ -d /Applications/Bitwarden.app ]] || brew install --cask bitwarden
+ssh -t stas@192.168.8.162 '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/curare/dotfiles-bootstrap/main/bootstrap.sh)"'
 ```
 
-Then run:
-
-```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/curare/dotfiles-bootstrap/18d543857c61cbabdbeeea39da9501ac15990ed4/bootstrap.sh)"
-```
-
-The script contains no secrets. It checks the prerequisites, prompts for the
-GitHub SSH key stored in Bitwarden, clears the clipboard after restoring the
-key, clones the private repository, and runs its installer.
+The script contains no secrets. It installs or prompts for Xcode Command Line
+Tools, installs Homebrew, restores the GitHub SSH key from Bitwarden clipboard
+or a direct Terminal paste, clones the private repository, and runs its
+installer. SSH runs intentionally skip GUI-only work in the private installer;
+finish those steps from the Mac console with `cd ~/dotfiles && ./install.sh`.
 
 The canonical source is `public-bootstrap/bootstrap.sh` in the private dotfiles
 repository. Publish that file here after changing it.
